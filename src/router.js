@@ -1,8 +1,14 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
+import { BookListPage, BookPage } from './pages';
 
 Vue.use(Router);
+
+export const routeNames = {
+  home: 'home',
+  books: 'books',
+  book: 'book',
+};
 
 export default new Router({
   mode: 'history',
@@ -10,16 +16,18 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
+      name: routeNames.home,
+      redirect: { name: routeNames.books },
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      path: '/books',
+      name: routeNames.books,
+      component: BookListPage,
+    },
+    {
+      path: '/book/:id',
+      name: routeNames.book,
+      component: BookPage,
     },
   ],
 });
