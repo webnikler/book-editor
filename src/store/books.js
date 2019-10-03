@@ -7,7 +7,7 @@ import {
 import store from '../store';
 import booksMock from '../mocks/books.json';
 
-export const name = 'usersStore';
+const name = 'usersStore';
 
 @Module({
   namespaced: true,
@@ -15,21 +15,18 @@ export const name = 'usersStore';
   name,
   store,
 })
-export default class BooksStore extends VuexModule {
+/* eslint no-unused-vars: off */
+class BooksStore extends VuexModule {
   books = [];
 
   booksLoading = false;
 
-  getBooks() {
-    return this.books;
+  getBookIndex(book) {
+    return this.books.findIndex(({ id }) => book.id === id);
   }
 
   getBookById(bookId) {
     return this.books.find(({ id }) => id === bookId);
-  }
-
-  getBookIndex(book) {
-    return this.books.findIndex(({ id }) => book.id === id);
   }
 
   @Action({ commit: 'pushBook' }) addBook(book) {
@@ -79,3 +76,5 @@ export default class BooksStore extends VuexModule {
     this.booksLoading = false;
   }
 }
+
+export default name;
