@@ -8,6 +8,14 @@ export const routeNames = {
   home: 'home',
   books: 'books',
   book: 'book',
+  create: 'create',
+  edit: 'edit',
+};
+
+export const bookPageModes = {
+  edit: 'edit',
+  view: 'view',
+  create: 'create',
 };
 
 export default new Router({
@@ -27,7 +35,26 @@ export default new Router({
     {
       path: '/book/:id',
       name: routeNames.book,
+      meta: {
+        mode: bookPageModes.view,
+      },
       component: BookPage,
     },
+    {
+      path: '/book/:id/edit',
+      name: routeNames.edit,
+      meta: {
+        mode: bookPageModes.edit,
+      },
+      component: BookPage,
+    },
+    {
+      path: '/book/create',
+      name: routeNames.create,
+      meta: {
+        mode: bookPageModes.create,
+      },
+      component: BookPage,
+    }
   ],
 });
