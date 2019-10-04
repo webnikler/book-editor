@@ -13,7 +13,7 @@ export default (books, key, sortDirection) => {
     return books;
   }
 
-  const sortedByASC = books.sort((prev, next) => {
+  const sortedByASC = [...books].sort((prev, next) => {
     const prevValue = normalizeValue(prev[key]);
     const nextValue = normalizeValue(next[key]);
 

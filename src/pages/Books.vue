@@ -27,12 +27,12 @@
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
-    <div class="row" v-if="booksState.booksLoading">
-      <div class="books__loader">
-        <div class="spinner-border" role="status">
-          <span class="sr-only">Загрузка</span>
+        <div class="row" v-if="booksState.booksLoading">
+          <div class="books__loader">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Загрузка</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -134,13 +134,20 @@ export default class BooksPage extends Vue {
     margin-top: 40px;
     margin-bottom: 40px;
 
+    &__table {
+      position: relative;
+    }
+
     &__loader {
+      position: absolute;
       display: flex;
       background-color: rgba(255, 255, 255, 0.5);
       align-items: center;
       justify-content: center;
       width: 100%;
-      height: 200px;
+      height: 100%;
+      top: 0;
+      left: 0;
     }
   }
 </style>
