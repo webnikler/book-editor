@@ -23,12 +23,23 @@
         <div class="card-body">
           <button type="button"
                   class="btn btn-success mr-2"
+                  v-if="mode === 'view'"
                   @click="onEditClick"
-          >Изменить</button>
+          >
+            Изменить
+          </button>
+          <button type="button"
+                  class="btn btn-success mr-2"
+                  v-if="mode !== 'view'"
+          >
+            Сохранить
+          </button>
           <button type="button"
                   class="btn btn-danger"
                   @click="onDeleteClick"
-          >Удалить</button>
+          >
+            Удалить
+          </button>
         </div>
       </div>
     </div>
