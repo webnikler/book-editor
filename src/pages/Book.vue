@@ -33,7 +33,7 @@
 
 <script>
 
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Action, State } from 'vuex-class';
 import namespace from '../store/books';
 import columnsMap from '../constants/book-columns-map';
@@ -48,7 +48,15 @@ export default class BookPage extends Vue {
 
   @Action('removeBook', { namespace }) removeBook;
 
+  @Action('syncWithLocalStorage', { namespace }) syncBooks;
+
+  @Watch('booksState.books') onBooksChange() {
+    this.syncBooks();
+  }
+
   book = null;
+
+  mode;
 
   columnsMap;
 

@@ -23,6 +23,10 @@ class BooksStore extends VuexModule {
 
   booksLoaded = false;
 
+  @Action syncWithLocalStorage() {
+    localStorage.setItem('books', JSON.stringify(this.books));
+  }
+
   @Action getBookIndex(book) {
     return this.books.findIndex(({ id }) => book.id === id);
   }
@@ -48,8 +52,9 @@ class BooksStore extends VuexModule {
 
     return new Promise(resolve => setTimeout(resolve, 1000))
       .then(() => {
-        this.context.commit('setBooks', booksMock);
-        return booksMock;
+        const books = JSON.parse(localStorage.getItem('books')) || booksMock;
+        this.context.commit('setBooks', books);
+        return books;
       })
       .finally(() => this.context.commit('endBooksLoad'));
   }

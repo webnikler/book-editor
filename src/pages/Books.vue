@@ -35,6 +35,8 @@ export default class BooksPage extends Vue {
 
   @Action('loadBooks', { namespace }) loadBooks;
 
+  @Action('syncWithLocalStorage', { namespace }) syncBooks;
+
   columnsMap;
 
   sortableColumns = [];
