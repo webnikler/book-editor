@@ -23,6 +23,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Action, State } from 'vuex-class';
 import namespace from '../store/books';
 import BooksTable from '../components/BooksTable.vue';
+import columnsMap from '../constants/book-columns-map';
 
 @Component({
   components: {
@@ -41,12 +42,16 @@ export default class BooksPage extends Vue {
   constructor() {
     super();
 
-    this.createColumns();
+    this.columnsMap = columnsMap;
     this.sortableColumns = ['Заголовок', 'Год публикации'];
   }
 
   mounted() {
-    this.loadBooks();
+    const { booksLoaded } = this.booksState;
+
+    if (!booksLoaded) {
+      this.loadBooks();
+    }
   }
 
   onCreateClick() {
@@ -54,23 +59,7 @@ export default class BooksPage extends Vue {
   }
 
   onBookClick(id) {
-    console.log(id);
     this.$router.push(`/book/${id}`).then();
-  }
-
-  createColumns() {
-    const columnsMap = new Map();
-
-    columnsMap.set('Изображение', 'imageUrl');
-    columnsMap.set('Заголовок', 'title');
-    columnsMap.set('Имя автора', 'firstName');
-    columnsMap.set('Фамилия автора', 'secondName');
-    columnsMap.set('Количество страниц', 'pagesCount');
-    columnsMap.set('Название издательства', 'publisherName');
-    columnsMap.set('Год публикации', 'publicationYear');
-    columnsMap.set('Дата выхода в тираж', 'releaseDate');
-
-    this.columnsMap = columnsMap;
   }
 }
 

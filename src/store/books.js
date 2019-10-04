@@ -21,12 +21,14 @@ class BooksStore extends VuexModule {
 
   booksLoading = false;
 
-  getBookIndex(book) {
+  booksLoaded = false;
+
+  @Action getBookIndex(book) {
     return this.books.findIndex(({ id }) => book.id === id);
   }
 
   @Action getBookById(bookId) {
-    return this.books.find(({ id }) => id === bookId);
+    return this.books.find(({ id }) => id === Number(bookId));
   }
 
   @Action({ commit: 'pushBook' }) addBook(book) {
@@ -74,6 +76,7 @@ class BooksStore extends VuexModule {
 
   @Mutation endBooksLoad() {
     this.booksLoading = false;
+    this.booksLoaded = true;
   }
 }
 
