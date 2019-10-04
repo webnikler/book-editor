@@ -1,12 +1,18 @@
 <template>
-  <div class="container">
+  <div class="container books">
+    <div class="row mb-3">
+      <button type="button"
+              class="btn btn-success"
+              @click="onCreateClick()"
+      >Добавить книгу</button>
+    </div>
     <div class="row">
       <div class="table-responsive books__table">
         <table class="table table-bordered table-hover table-sm">
           <thead class="thead-dark">
             <tr>
               <th v-for="(title, i) of columnsMap.keys()"
-                  @click="onColumnHeadClick(title)"
+                  @click="onColumnTitleClick(title)"
                   :class="{ clickable: sortableColumns.includes(title) }"
                   :key="i">{{ getTitle(title) }}</th>
             </tr>
@@ -46,8 +52,6 @@ export default class BooksPage extends Vue {
 
   @Action('loadBooks', { namespace }) loadBooks;
 
-  @Action('getSortedBooks', { namespace }) getSortedBooks;
-
   sortColumn = null;
 
   sortDirection = null;
@@ -75,15 +79,24 @@ export default class BooksPage extends Vue {
     this.loadBooks();
   }
 
-  onColumnHeadClick(columnTitle) {
+  onCreateClick() {
+    this.$router.push('/book/create').then();
+  }
+
+  onColumnTitleClick(columnTitle) {
+    if (!this.sortableColumns.includes(columnTitle)) {
+      return;
+    }
+
     this.sortColumn = this.columnsMap.get(columnTitle);
     this.sortDirection = this.sortDirection === 'ASC' ? 'DESC' : 'ASC';
   }
 
   getTitle(title) {
     const isColumnSorted = this.columnsMap.get(title) === this.sortColumn;
+    const isColumnSortable = this.sortableColumns.includes(title);
 
-    if (isColumnSorted) {
+    if (isColumnSorted && isColumnSortable) {
       return this.sortDirection === 'ASC' ? `${title} ↑` : `${title} ↓`;
     } else {
       return title;
@@ -91,7 +104,8 @@ export default class BooksPage extends Vue {
   }
 
   get books() {
-    return getSortedBooks(this.booksState.books, this.sortColumn, this.sortDirection);
+    const { books } = this.booksState;
+    return getSortedBooks(books, this.sortColumn, this.sortDirection)
   }
 }
 
@@ -117,6 +131,9 @@ export default class BooksPage extends Vue {
   }
 
   .books {
+    margin-top: 40px;
+    margin-bottom: 40px;
+
     &__loader {
       display: flex;
       background-color: rgba(255, 255, 255, 0.5);
