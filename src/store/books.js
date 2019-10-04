@@ -48,13 +48,20 @@ class BooksStore extends VuexModule {
   }
 
   @Action loadBooks() {
+    const localStorageBooks = JSON.parse(localStorage.getItem('books'));
+
+    if (localStorageBooks) {
+      this.context.commit('setBooks', localStorageBooks);
+      this.context.commit('endBooksLoad');
+      return Promise.resolve(localStorageBooks);
+    }
+
     this.context.commit('startBooksLoad');
 
     return new Promise(resolve => setTimeout(resolve, 1000))
       .then(() => {
-        const books = JSON.parse(localStorage.getItem('books')) || booksMock;
-        this.context.commit('setBooks', books);
-        return books;
+        this.context.commit('setBooks', booksMock);
+        return booksMock;
       })
       .finally(() => this.context.commit('endBooksLoad'));
   }

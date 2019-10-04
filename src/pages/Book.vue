@@ -16,11 +16,15 @@
               class="list-group-item"
               :key="key"
           >
-            {{ title }}: {{ book[key] }}
+            <span v-if="mode === 'view'">{{ title }}: {{ book[key] }}</span>
+            <span v-else>{{ title }}: <input type="text" v-model="book[key]" /></span>
           </li>
         </ul>
         <div class="card-body">
-          <button type="button" class="btn btn-success mr-2">Изменить</button>
+          <button type="button"
+                  class="btn btn-success mr-2"
+                  @click="onEditClick"
+          >Изменить</button>
           <button type="button"
                   class="btn btn-danger"
                   @click="onDeleteClick"
@@ -56,8 +60,6 @@ export default class BookPage extends Vue {
 
   book = null;
 
-  mode;
-
   columnsMap;
 
   async mounted() {
@@ -78,9 +80,18 @@ export default class BookPage extends Vue {
     this.$router.back();
   }
 
+  async onEditClick() {
+    const { id } = this.book;
+    await this.$router.push(`/book/${id}/edit`);
+  }
+
   async onDeleteClick() {
     await this.removeBook(this.book);
     await this.$router.push('/books');
+  }
+
+  get mode() {
+    return this.$route.meta.mode;
   }
 }
 

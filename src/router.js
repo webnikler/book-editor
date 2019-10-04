@@ -33,6 +33,14 @@ export default new Router({
       component: BookListPage,
     },
     {
+      path: '/book/create',
+      name: routeNames.create,
+      meta: {
+        mode: bookPageModes.create,
+      },
+      component: BookPage,
+    },
+    {
       path: '/book/:id',
       name: routeNames.book,
       meta: {
@@ -48,13 +56,5 @@ export default new Router({
       },
       component: BookPage,
     },
-    {
-      path: '/book/create',
-      name: routeNames.create,
-      meta: {
-        mode: bookPageModes.create,
-      },
-      component: BookPage,
-    }
   ],
 });
