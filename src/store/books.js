@@ -25,7 +25,7 @@ class BooksStore extends VuexModule {
     return this.books.findIndex(({ id }) => book.id === id);
   }
 
-  getBookById(bookId) {
+  @Action getBookById(bookId) {
     return this.books.find(({ id }) => id === bookId);
   }
 
