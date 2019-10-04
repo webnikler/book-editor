@@ -9,15 +9,21 @@
     <div class="row" v-if="book">
       <div class="card" style="width: 100%;">
         <div class="card-body">
-          <h5 class="card-title">{{ book.title }}</h5>
+          <h5 class="card-title">
+            <span v-if="mode === 'view'">{{ book.title }}</span>
+            <input v-else type="text" v-model="book.title" />
+          </h5>
         </div>
         <ul class="list-group list-group-flush">
           <li v-for="[title, key] in columnsMap"
               class="list-group-item"
               :key="key"
           >
-            <span v-if="mode === 'view'">{{ title }}: {{ book[key] }}</span>
-            <span v-else>{{ title }}: <input type="text" v-model="book[key]" /></span>
+            <span>
+              <b class="mr-3">{{ title }}:</b>
+              <span v-if="mode === 'view'">{{ book[key] }}</span>
+              <input v-else type="text" v-model="book[key]" />
+            </span>
           </li>
         </ul>
         <div class="card-body">
@@ -31,12 +37,14 @@
           <button type="button"
                   class="btn btn-success mr-2"
                   v-if="mode !== 'view'"
+                  @click="onSaveClick"
           >
             Сохранить
           </button>
           <button type="button"
                   class="btn btn-danger"
                   @click="onDeleteClick"
+                  v-if="mode === 'view'"
           >
             Удалить
           </button>
@@ -63,6 +71,10 @@ export default class BookPage extends Vue {
 
   @Action('removeBook', { namespace }) removeBook;
 
+  @Action('addBook', { namespace }) addBook;
+
+  @Action('updateBook', { namespace }) updateBook;
+
   @Action('syncWithLocalStorage', { namespace }) syncBooks;
 
   @Watch('booksState.books') onBooksChange() {
@@ -74,31 +86,56 @@ export default class BookPage extends Vue {
   columnsMap;
 
   async mounted() {
-    const { id } = this.$route.params;
     const { booksLoaded } = this.booksState;
+
+    this.setColumnsMap();
 
     if (!booksLoaded) {
       await this.loadBooks();
     }
 
-    this.book = await this.getBook(id);
+    await this.fetchBook();
+  }
+
+  setColumnsMap() {
     this.columnsMap = [...columnsMap]
-      /* eslint no-unused-vars: off */
+    /* eslint no-unused-vars: off */
       .filter(([title, key]) => !['imageUrl', 'title'].includes(key));
   }
 
-  onBackClick() {
-    this.$router.back();
+  async onBackClick() {
+    await this.$router.back();
+    await this.fetchBook();
   }
 
-  async onEditClick() {
+  async fetchBook() {
+    const { id } = this.$route.params;
+    this.book = { ...await this.getBook(id) };
+
+    return this.book;
+  }
+
+  onEditClick() {
     const { id } = this.book;
-    await this.$router.push(`/book/${id}/edit`);
+    return this.$router.push(`/book/${id}/edit`);
   }
 
   async onDeleteClick() {
     await this.removeBook(this.book);
     await this.$router.push('/books');
+  }
+
+  async onSaveClick() {
+    const newId = +new Date();
+
+    if (this.mode === 'create') {
+      await this.addBook({ ...this.book, id: newId });
+    } else {
+      await this.updateBook(this.book);
+    }
+
+    await this.$router.push(`/book/${this.book.id || newId}`);
+    await this.fetchBook();
   }
 
   get mode() {

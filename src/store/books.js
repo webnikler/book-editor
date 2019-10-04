@@ -39,8 +39,8 @@ class BooksStore extends VuexModule {
     return book;
   }
 
-  @Action({ commit: 'putBook' }) updateBook(book) {
-    return [book, this.getBookIndex(book)];
+  @Action({ commit: 'putBook' }) async updateBook(book) {
+    return [book, await this.getBookIndex(book)];
   }
 
   @Action({ commit: 'removeBookByIndex' }) removeBook(book) {
@@ -49,21 +49,22 @@ class BooksStore extends VuexModule {
 
   @Action loadBooks() {
     const localStorageBooks = JSON.parse(localStorage.getItem('books'));
+    const { commit } = this.context;
 
     if (localStorageBooks) {
-      this.context.commit('setBooks', localStorageBooks);
-      this.context.commit('endBooksLoad');
+      commit('setBooks', localStorageBooks);
+      commit('endBooksLoad');
       return Promise.resolve(localStorageBooks);
     }
 
-    this.context.commit('startBooksLoad');
+    commit('startBooksLoad');
 
     return new Promise(resolve => setTimeout(resolve, 1000))
       .then(() => {
-        this.context.commit('setBooks', booksMock);
+        commit('setBooks', booksMock);
         return booksMock;
       })
-      .finally(() => this.context.commit('endBooksLoad'));
+      .finally(() => commit('endBooksLoad'));
   }
 
   @Mutation setBooks(books) {
@@ -71,15 +72,21 @@ class BooksStore extends VuexModule {
   }
 
   @Mutation putBook([book, index]) {
-    this.books[index] = book;
+    const books = [...this.books];
+    books[index] = book;
+
+    this.books = books;
   }
 
   @Mutation pushBook(book) {
-    this.books.push(book);
+    this.books = [...this.books, book];
   }
 
   @Mutation removeBookByIndex(index) {
-    this.books.splice(index, 1);
+    const books = [...this.books];
+    books.splice(index, 1);
+
+    this.books = books;
   }
 
   @Mutation startBooksLoad() {
