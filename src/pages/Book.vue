@@ -160,12 +160,11 @@ export default class BookPage extends Vue {
   }
 
   async onSaveClick() {
-    const hasErrors = this.$v.book.$error;
     const newId = +new Date();
 
     this.$v.book.$touch();
 
-    if (hasErrors) {
+    if (this.$v.book.$error) {
       return;
     }
 

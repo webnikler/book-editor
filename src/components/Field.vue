@@ -47,6 +47,10 @@ export default class Field extends Vue {
   }
 
   get errors() {
+    if (!this.validation.$dirty) {
+      return [];
+    }
+
     return Object.keys(this.messages)
       .filter(key => !this.validation[key])
       .map(key => this.messages[key]);
