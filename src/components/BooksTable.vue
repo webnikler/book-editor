@@ -59,7 +59,9 @@ export default class BooksTable extends Vue {
   sortDirection = null;
 
   onColumnTitleClick(columnTitle) {
-    if (!this.sortableColumns.includes(columnTitle)) {
+    const isSortable = this.sortableColumns.includes(columnTitle);
+
+    if (!isSortable) {
       return;
     }
 

@@ -9,9 +9,15 @@
     <div class="row" v-if="book">
       <div class="card" style="width: 100%;">
         <div class="card-body">
-          <h5 class="card-title">
+          <h5 class="card-title d-flex align-items-baseline mb-0">
             <span v-if="mode === 'view'">{{ book.title }}</span>
-            <input v-else type="text" v-model="book.title" />
+            <Field :value.sync="book.title"
+                   class="flex-fill"
+                   v-else
+                   :type="fieldTypes.title"
+                   :messages="messages.title"
+                   :validation="$v.book.title"
+            />
           </h5>
         </div>
         <ul class="list-group list-group-flush">
@@ -19,14 +25,20 @@
               class="list-group-item"
               :key="key"
           >
-            <span>
+            <div class="d-flex align-items-baseline">
               <b class="mr-3">{{ title }}:</b>
               <span v-if="mode === 'view'">{{ book[key] }}</span>
-              <input v-else type="text" v-model="book[key]" />
-            </span>
+              <Field :value.sync="book[key]"
+                     class="flex-fill"
+                     v-else
+                     :type="fieldTypes[key]"
+                     :messages="messages[key]"
+                     :validation="$v.book[key]"
+              />
+            </div>
           </li>
         </ul>
-        <div class="card-body">
+        <div class="card-body d-flex align-items-baseline">
           <button type="button"
                   class="btn btn-success mr-2"
                   v-if="mode === 'view'"
@@ -48,6 +60,12 @@
           >
             Удалить
           </button>
+          <div class="alert alert-danger"
+               v-if="mode !== 'view' && $v.book.$error"
+               role="alert"
+          >
+            В форме содержатся ошибки!
+          </div>
         </div>
       </div>
     </div>
@@ -60,8 +78,16 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Action, State } from 'vuex-class';
 import namespace from '../store/books';
 import columnsMap from '../constants/book-columns-map';
+import validations from '../forms/book.validation';
+import messages from '../forms/book.messages';
+import Field from '../components/Field.vue';
 
-@Component
+@Component({
+  validations,
+  components: {
+    Field,
+  },
+})
 export default class BookPage extends Vue {
   @State(namespace) booksState;
 
@@ -85,6 +111,14 @@ export default class BookPage extends Vue {
 
   columnsMap;
 
+  messages = messages;
+
+  fieldTypes = {
+    pagesCount: 'number',
+    publicationYear: 'number',
+    releaseDate: 'date',
+  };
+
   async mounted() {
     const { booksLoaded } = this.booksState;
 
@@ -98,7 +132,7 @@ export default class BookPage extends Vue {
   }
 
   setColumnsMap() {
-    this.columnsMap = [...columnsMap]
+    this.columnsMap = columnsMap
     /* eslint no-unused-vars: off */
       .filter(([title, key]) => !['imageUrl', 'title'].includes(key));
   }
@@ -126,7 +160,14 @@ export default class BookPage extends Vue {
   }
 
   async onSaveClick() {
+    const hasErrors = this.$v.book.$error;
     const newId = +new Date();
+
+    this.$v.book.$touch();
+
+    if (hasErrors) {
+      return;
+    }
 
     if (this.mode === 'create') {
       await this.addBook({ ...this.book, id: newId });
@@ -144,7 +185,3 @@ export default class BookPage extends Vue {
 }
 
 </script>
-
-<style scoped lang="scss">
-
-</style>
