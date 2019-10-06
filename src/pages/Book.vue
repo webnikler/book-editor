@@ -132,7 +132,7 @@ export default class BookPage extends Vue {
   }
 
   setColumnsMap() {
-    this.columnsMap = columnsMap
+    this.columnsMap = [...columnsMap]
     /* eslint no-unused-vars: off */
       .filter(([title, key]) => !['imageUrl', 'title'].includes(key));
   }
