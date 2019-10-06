@@ -29,13 +29,13 @@ export default class Field extends Vue {
 
   get model() {
     return this.type === 'date'
-      ? moment(this.value).format('YYYY-MM-DD')
+      ? moment(this.value, 'DD.MM.YYYY').format('YYYY-MM-DD')
       : this.value;
   }
 
   set model(value) {
     const formattedValue = this.type === 'date'
-      ? moment(value).valueOf()
+      ? moment(value, 'YYYY-MM-DD').format('DD.MM.YYYY')
       : value;
 
     this.$emit('update:value', formattedValue);

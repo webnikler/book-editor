@@ -31,6 +31,6 @@ export default {
     minValue: minValue(1800),
   },
   releaseDate: {
-    minValue: minDate('01.01.1800'),
+    minDate: minDate('01.01.1800'),
   },
 };

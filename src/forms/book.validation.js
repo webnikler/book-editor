@@ -6,6 +6,8 @@ import {
 } from 'vuelidate/lib/validators';
 import moment from 'moment';
 
+const minDate = dateString => date => moment(date, 'DD.MM.YYYY').isAfter(dateString);
+
 export default {
   book: {
     title: {
@@ -32,7 +34,7 @@ export default {
       minValue: minValue(1800),
     },
     releaseDate: {
-      minValue: minValue(moment('1800-01-01').valueOf()),
+      minDate: minDate('1800-01-01'),
     },
   },
 };
