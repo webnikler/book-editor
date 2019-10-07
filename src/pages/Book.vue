@@ -2,9 +2,13 @@
   <div class="container mt-5 mb-5">
     <div class="row mb-3">
       <button type="button"
-              class="btn btn-primary"
+              class="btn btn-primary mr-2"
               @click="onBackClick()"
       >Назад</button>
+      <button type="button"
+              class="btn btn-primary"
+              @click="onToListClick()"
+      >К списку</button>
     </div>
     <div class="row" v-if="book">
       <div class="card" style="width: 100%;">
@@ -140,6 +144,10 @@ export default class BookPage extends Vue {
   async onBackClick() {
     await this.$router.back();
     await this.fetchBook();
+  }
+
+  async onToListClick() {
+    await this.$router.push('/books');
   }
 
   async fetchBook() {
