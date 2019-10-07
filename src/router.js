@@ -10,6 +10,7 @@ export const routeNames = {
   book: 'book',
   create: 'create',
   edit: 'edit',
+  notFound: 'notFound',
 };
 
 export const bookPageModes = {
@@ -55,6 +56,12 @@ export default new Router({
         mode: bookPageModes.edit,
       },
       component: BookPage,
+    },
+    {
+      path: '*',
+      name: routeNames.notFound,
+      // @TODO сделать компонент 404
+      redirect: { name: routeNames.books },
     },
   ],
 });
