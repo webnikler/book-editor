@@ -8,7 +8,7 @@
     </div>
     <div class="row" v-if="book">
       <div class="card" style="width: 100%;">
-        <div class="card-body">
+        <div class="card-header">
           <h5 class="card-title d-flex align-items-baseline mb-0">
             <span v-if="mode === 'view'">{{ book.title }}</span>
             <Field :value.sync="book.title"
@@ -160,7 +160,8 @@ export default class BookPage extends Vue {
   }
 
   async onSaveClick() {
-    const newId = +new Date();
+    const { id: currentId } = this.book;
+    const id = typeof currentId !== 'undefined' ? currentId : +new Date();
 
     this.$v.book.$touch();
 
@@ -169,12 +170,12 @@ export default class BookPage extends Vue {
     }
 
     if (this.mode === 'create') {
-      await this.addBook({ ...this.book, id: newId });
+      await this.addBook({ ...this.book, id });
     } else {
       await this.updateBook(this.book);
     }
 
-    await this.$router.push(`/book/${this.book.id || newId}`);
+    await this.$router.push(`/book/${id}`);
     await this.fetchBook();
   }
 
